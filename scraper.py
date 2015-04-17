@@ -6,8 +6,8 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 # Set up variables
-entity_id = "DCM048_DFCMAS_gov"
-url = "https://www.gov.uk/government/publications/transactions-over-25k-2013-2014"
+entity_id = "E5043_KUTCRBO_gov"
+url = "http://data.kingston.gov.uk/Kingston_Open_Data/"
 
 # Set up functions
 def convert_mth_strings ( mth_string ):
@@ -23,32 +23,18 @@ html = urllib2.urlopen(url)
 soup = BeautifulSoup(html)
 
 # find all entries with the required class
-blocks = soup.findAll('div', {'class':'attachment-details'})
+links = soup.findAll('a', href=True)
 
-for block in blocks:
-
-	link = block.a['href']
-	title = block.h2.contents[0]
-	
-	# Some of our tags aren't consistent and bury the 'a' tag within the H2 tag
-	if hasattr(title,"href"):
-		title = title.text.strip()
-
-	# add the right prefix onto the url
-	csvUrl = link.replace("/preview","")
-	csvUrl = csvUrl.replace("/government","http://www.gov.uk/government")
-	#print csvUrl
-
-	# create the right strings for the new filename
-	csvYr = title.split(' ')[-1]
-	csvMth = title.split(' ')[-2][:3]
-	csvMth = csvMth.upper()
-	csvMth = convert_mth_strings(csvMth);
-	
-	filename = entity_id + "_" + csvYr + "_" + csvMth + ".csv"
-	
-	todays_date = str(datetime.now())
-	
-	scraperwiki.sqlite.save(unique_keys=['l'], data={"l": csvUrl, "f": filename, "d": todays_date })
-	
-	print filename
+for link in links:
+	url = link['href']
+	if 'https://drive.google.com/file/d/' in url:
+		title = link.contents[0]
+		# create the right strings for the new filename
+		csvYr = title.split(' ')[-1]
+		csvMth = title.split(' ')[-2][:3]
+		csvMth = csvMth.upper()
+		csvMth = convert_mth_strings(csvMth);
+		filename = entity_id + "_" + csvYr + "_" + csvMth + ".csv"
+		todays_date = str(datetime.now())
+		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": url, "f": filename, "d": todays_date })
+		print filename
