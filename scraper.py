@@ -29,7 +29,7 @@ def validateFilename(filename):
 		return False
 	date = found.group(0)
 	year, month = int(date[:4]), int(date[5:7])
-	now = datetime.datetime.now()
+	now = datetime.now()
 	validYear = (2000 <= year <= now.year)
 	validMonth = (1 <= month <= 12)
 	if all([validName, validYear, validMonth]):
