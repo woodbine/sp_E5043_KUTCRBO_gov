@@ -40,20 +40,21 @@ def validateURL(url):
 		r = requests.get(url, allow_redirects=True)
 		return r.status_code == 200
 	except:
-		return False
+		raise
 
 def validateFiletype(url):
 	try:
 		r = requests.head(url, allow_redirects=True)
 		sourceFilename = r.headers.get('Content-Disposition')
 		if sourceFilename:
-			ext = os.path.splitext(sourceFilename)[1].replace('"', '').replace(';', '')
+			ext = os.path.splitext(sourceFilename)[1].replace('"', '').replace(';', '').replace(' ', '')
 		else:
 			ext = os.path.splitext(url)[1]
 		if ext in ['.csv', '.xls', '.xlsx']:
 			return True
 	except:
-		return False
+		raise
+
 		
 # pull down the content from the webpage
 html = urllib2.urlopen(url)
@@ -73,14 +74,19 @@ for link in links:
 		csvMth = convert_mth_strings(csvMth);
 		filename = entity_id + "_" + csvYr + "_" + csvMth + ".csv"
 		todays_date = str(datetime.now())
+
+		url = url.strip()
 		if not validateFilename(filename):
-			print "Invalid filename"
+			print filename, "*Error: Invalid filename*"
+			Error = True
 			continue
 		if not validateURL(url):
-			print "Invalid URL"
+			print filename, "*Error: Invalid URL*"
+			Error = True
 			continue
 		if not validateFiletype(url):
-			print "Invalid filetype"
+			print filename, "*Error: Invalid filetype*"
+			Error = True
 			continue
 		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": url, "f": filename, "d": todays_date })
 		print filename
