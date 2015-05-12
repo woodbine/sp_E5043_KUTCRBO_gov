@@ -4,6 +4,7 @@ import re
 import datetime
 import scraperwiki
 import urllib2
+import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
