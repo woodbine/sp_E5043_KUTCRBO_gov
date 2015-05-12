@@ -83,6 +83,7 @@ for link in links:
 			continue
 		if not validateURL(url):
 			print filename, "*Error: Invalid URL*"
+			print url
 			Error = True
 			continue
 		if not validateFiletype(url):
@@ -91,3 +92,5 @@ for link in links:
 			continue
 		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": url, "f": filename, "d": todays_date })
 		print filename
+if Error:
+	raise Exception("Errors occurred during scrape.")
