@@ -72,7 +72,7 @@ for link in links:
 		csvMth = title.split(' ')[-2][:3]
 		csvMth = csvMth.upper()
 		csvMth = convert_mth_strings(csvMth);
-		filename = entity_id + "_" + csvYr + "_" + csvMth + ".csv"
+		filename = entity_id + "_" + csvYr + "_" + csvMth
 		todays_date = str(datetime.now())
 
 		url = url.strip()
