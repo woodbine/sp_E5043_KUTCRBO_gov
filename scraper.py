@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 # Set up variables
 entity_id = "E5043_KUTCRBO_gov"
 url = "http://data.kingston.gov.uk/Kingston_Open_Data/"
+errors = 0
 
 # Set up functions
 def convert_mth_strings ( mth_string ):
@@ -76,21 +77,21 @@ for link in links:
 		filename = entity_id + "_" + csvYr + "_" + csvMth
 		todays_date = str(datetime.now())
 
-		url = url.strip()
+		fileUrl = url.strip()
 		if not validateFilename(filename):
 			print filename, "*Error: Invalid filename*"
-			Error = True
+			errors += 1
 			continue
-		if not validateURL(url):
+		if not validateURL(fileUrl):
 			print filename, "*Error: Invalid URL*"
-			print url
-			Error = True
+			print fileUrl
+			errors += 1
 			continue
-		if not validateFiletype(url):
+		if not validateFiletype(fileUrl):
 			print filename, "*Error: Invalid filetype*"
-			Error = True
+			errors += 1
 			continue
-		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": url, "f": filename, "d": todays_date })
+		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileUrl, "f": filename, "d": todays_date })
 		print filename
-if Error:
-	raise Exception("Errors occurred during scrape.")
+if errors > 0:
+	raise Exception("%d errors occurred during scrape." % errors)
