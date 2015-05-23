@@ -87,10 +87,12 @@ for link in links:
 			print fileUrl
 			errors += 1
 			continue
-		if not validateFiletype(fileUrl):
-			print filename, "*Error: Invalid filetype*"
-			errors += 1
-			continue
+		# Commenting out the file type test because the CMS uses a crumby dynamic url which doesn't link to a file, so we can't test for file type
+		# if not validateFiletype(fileUrl):
+			# print filename, "*Error: Invalid filetype*"
+			# errors += 1
+			# continue
+			
 		scraperwiki.sqlite.save(unique_keys=['l'], data={"l": fileUrl, "f": filename, "d": todays_date })
 		print filename
 if errors > 0:
